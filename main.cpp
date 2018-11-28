@@ -8,17 +8,18 @@ using namespace std;
 
 int main(int argc, char** argv)
 {
-    cxxopts::Options options("JSSP Simulated Annealing Scheduler");
+    cxxopts::Options options("jobshop filename", "JSSP Simulated Annealing Scheduler");
     options.add_options()
     ("f,format", "Instance type", cxxopts::value<int>()->default_value("0"))
     ("j,jobs", "Number of jobs to load", cxxopts::value<int>()->default_value("0"))
-    ("m,measure", "Measures execution time in nanoseconds")
+    ("m, measure", "Measures execution time in nanoseconds")
     ("a,alpha", "Sets cooling factor", cxxopts::value<double>()->default_value("0.9999"))
     ("t, temp", "Sets starting temperature", cxxopts::value<double>()->default_value("150.0"))
-    ("i, iterations", "Max iterations", cxxopts::value<int>()->default_value("10000"));
+    ("i, iterations", "Max iterations", cxxopts::value<int>()->default_value("100000"));
     if(argc == 1)
     {
         std::cout<<options.help()<<std::endl;
+        return 0;
     }
     auto result = options.parse(argc, argv);
     Instance i;
@@ -32,7 +33,12 @@ int main(int argc, char** argv)
         return 1;
     }
     Solver solver(i);
+    auto t1 = chrono::high_resolution_clock::now();
     solver.simulatedAnnealing(result["iterations"].as<int>(), result["temp"].as<double>(), result["alpha"].as<double>());
-    solver.printStartTimes();
+    auto t2 = chrono::high_resolution_clock::now();
+    if(result.count("measure"))
+        std::cout<<chrono::duration_cast<chrono::nanoseconds>( t2 - t1 ).count()<<std::endl;
+    else
+        solver.printStartTimes();
     return 0;
 }

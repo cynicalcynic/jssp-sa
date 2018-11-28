@@ -1,7 +1,8 @@
 #include "Graph.h"
 #include <algorithm>
+#include <limits>
 
-#define INF 999999
+#define INF std::numeric_limits<int>::max()
 
 Graph::Graph()
 {
@@ -10,8 +11,9 @@ Graph::Graph()
 
 Graph::~Graph()
 {
-    //dtor
+
 }
+
 int Graph::addVertex(int weight)
 {
     adjacencyList.push_back(Vertex(weight, std::set<int>()));
@@ -63,9 +65,7 @@ void Graph::generateClique(const std::vector<int> &vertices)
         for(int j=i+1; j<vertices.size(); j++)
         {
             addEdge(vertices[i], vertices[j]);
-            //std::cout<<"Adding edge from"<<vertices[i]<<"to"<<vertices[j]<<std::endl;
         }
-        //std::cout<<std::endl;
     }
 }
 
@@ -143,10 +143,9 @@ void Graph::visit(int vertex)
     if(visited[vertex] == TEMPORARY)
     {
         cyclic = true;
-        std::cout<<"KA-BOOM"<<std::endl;
         return;
     } //won't happen
-    visited[vertex] == TEMPORARY;
+    visited[vertex] = TEMPORARY;
     for(auto it=adjacencyList[vertex].connections.begin(); it!=adjacencyList[vertex].connections.end(); it++)
     {
         visit(*it);

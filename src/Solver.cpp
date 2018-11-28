@@ -30,7 +30,6 @@ int Solver::calculateMakespan(const std::vector<int> &critPath)
 
 void Solver::loadGraph(const Data &instance)
 {
-    //add first dummy vertex
     jobs.resize(noJobs);
     machines.resize(noMachines);
     vertexWeigths.resize(noJobs * noMachines + 2);
