@@ -16,7 +16,7 @@ int main(int argc, char** argv)
     ("a,alpha", "Sets cooling factor", cxxopts::value<double>()->default_value("0.9999"))
     ("t, temp", "Sets starting temperature", cxxopts::value<double>()->default_value("150.0"))
     ("i, iterations", "Max iterations", cxxopts::value<int>()->default_value("10000"));
-    if(argc == 0)
+    if(argc == 1)
     {
         std::cout<<options.help()<<std::endl;
     }
