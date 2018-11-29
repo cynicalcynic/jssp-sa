@@ -22,7 +22,7 @@ class Solver
     public:
         Solver(const Instance &instance);
         virtual ~Solver();
-        void simulatedAnnealing(const int kmax, const double startTemp, const double alpha);
+        void simulatedAnnealing(const int kmax, const double startTemp, const double alpha, const int timeLimit);
         void printStartTimes();
     protected:
 

@@ -2,7 +2,7 @@
 #include <vector>
 #include <math.h>
 #include <algorithm>
-#include <time.h>
+#include <chrono>
 
 Solver::Solver(const Instance &instance)
 {
@@ -36,9 +36,9 @@ void Solver::loadGraph(const Data &instance)
 
     //add source
     source = g.addVertex(0);
-    for(size_t i = 0; i<instance.size(); i++)
+    for(size_t i = 0; i<instance.size(); ++i)
     {
-        for(size_t j=0; j<instance[i].size(); j++)
+        for(size_t j=0; j<instance[i].size(); ++j)
         {
             int num = g.addVertex(instance[i][j].second);
             jobs[i].push_back(Operation(instance[i][j].second, num));
@@ -52,17 +52,17 @@ void Solver::loadGraph(const Data &instance)
     sink = g.addVertex(0);
 
     //connect operations together
-    for(size_t i = 0; i<instance.size(); i++)
+    for(size_t i = 0; i<instance.size(); ++i)
     {
         g.addEdge(source, jobs[i][0].vertexId);
-        for(size_t j=1; j<instance[i].size(); j++)
+        for(size_t j=1; j<instance[i].size(); ++j)
         {
             g.addEdge(jobs[i][j-1].vertexId, jobs[i][j].vertexId);
         }
         g.addEdge(jobs[i].back().vertexId, sink);
     }
 
-    for(size_t i=0; i<machines.size(); i++)
+    for(size_t i=0; i<machines.size(); ++i)
         g.generateClique(machines[i]);
 }
 
@@ -97,16 +97,19 @@ void Solver::printStartTimes()
     };
 }
 
-void Solver::simulatedAnnealing(const int kmax, const double startTemp, const double alpha)
+void Solver::simulatedAnnealing(const int kmax, const double startTemp, const double alpha, const int timeLimit)
 {
     static std::uniform_real_distribution<>dis(0.0f, 1.0f);
-//    const double alpha = 0.9999f;
-//    const int kmax = 10000;
+
     double temp = startTemp;
     bestDistances = g.getDistances(source);
+
     int makespan = calculateMakespan(g.getCriticalPath(source, sink));
     bestMakespan = makespan;
-    for(int k=0; k<kmax; k++)
+
+    auto beginTime = std::chrono::high_resolution_clock::now();
+    bool timeElapsed = false;
+    for(int k=0; k<kmax && !timeElapsed; ++k)
     {
         Edge edge;
         auto edges = findCriticalEdges();
@@ -142,6 +145,11 @@ void Solver::simulatedAnnealing(const int kmax, const double startTemp, const do
                 g.invertEdge(edge.second, edge.first);
             }
         }
+
+        int elapsed = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::high_resolution_clock::now() - beginTime).count();
+        if(elapsed >= timeLimit)
+            timeElapsed = true;
+
         temp *= alpha;
     }
 }
