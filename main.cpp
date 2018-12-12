@@ -15,7 +15,7 @@ int main(int argc, char** argv)
     ("m, measure", "Measures execution time in nanoseconds")
     ("a, alpha", "Sets cooling factor", cxxopts::value<double>()->default_value("0.9999"))
     ("t, temp", "Sets starting temperature", cxxopts::value<double>()->default_value("150.0"))
-    ("i, iterations", "Max iterations", cxxopts::value<int>()->default_value("100000"))
+    ("i, iterations", "Max iterations", cxxopts::value<int>()->default_value("80000"))
     ("l, limit", "Execution time limit", cxxopts::value<int>()->default_value("300"));
     if(argc == 1)
     {

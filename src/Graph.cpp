@@ -60,9 +60,9 @@ void Graph::invertEdge(int from, int to)
 
 void Graph::generateClique(const std::vector<int> &vertices)
 {
-    for(int i=0; i<vertices.size(); i++)
+    for(size_t i=0; i<vertices.size(); i++)
     {
-        for(int j=i+1; j<vertices.size(); j++)
+        for(size_t j=i+1; j<vertices.size(); j++)
         {
             addEdge(vertices[i], vertices[j]);
         }
